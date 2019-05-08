@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="/Users/gabrielruoff/Dropbox/workspace/droneArmControl/lib/commons-math-2.2/commons-math-2.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="/Users/gabrielruoff/Dropbox/workspace/droneArmControl/lib/commons-math-2.2/commons-math-2.2-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/gabrielruoff/Dropbox/workspace/droneArmControl/lib/commons-math-2.2/commons-math-2.2.jar"/>
+	<classpathentry kind="lib" path="/Users/gabrielruoff/Dropbox/workspace/droneArmControl/lib/LeapJava.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/Users/gabrielruoff/Dropbox/workspace/droneArmControl/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/RXTXcomm-2.2pre2.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="droneArmControl/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
