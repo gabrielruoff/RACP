@@ -1,7 +1,7 @@
 
 public class Joint {
 	
-	public int position;
+	public double position;
 
 	public Joint(int initialPos) {
 		
@@ -9,9 +9,9 @@ public class Joint {
 		
 	}
 	
-	public void setPosition(int pos) {
+	public void setPosition(double zRotationPos) {
 		
-		this.position = pos;
+		this.position = zRotationPos;
 		
 	}
 	
