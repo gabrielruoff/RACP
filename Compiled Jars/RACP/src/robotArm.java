@@ -9,7 +9,7 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 
-public class Arm implements SerialPortEventListener {
+public class robotArm implements SerialPortEventListener {
 	
 	public Joint[] Joints;
 	static OutputStream out = null;
@@ -18,14 +18,14 @@ public class Arm implements SerialPortEventListener {
 	static DecimalFormat df = new DecimalFormat("000");
 	
 	//Constructor
-	public Arm(Joint[] Joints, String portName) {
+	public robotArm(Joint[] Joints, String portName) {
 		
 		this.Joints = Joints;
 		
 		System.out.println("Connecting to Arm...");
 		
 		try {
-			new Arm(null, null).connect(portName);
+			new robotArm(null, null).connect(portName);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println("connection failed");
