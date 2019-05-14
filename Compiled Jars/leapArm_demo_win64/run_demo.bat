@@ -1,1 +1,1 @@
-java -jar -Djava.library.path="%~dp0leapArm_lib" leapArm_demo.jar
+java -jar -Djava.library.path="%~dp0leapArm_lib2" leapArm_demo.jar COM4
