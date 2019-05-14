@@ -1,0 +1,1 @@
+java -jar -Djava.library.path="%~dp0leapArm_lib" leapArm_demo.jar
