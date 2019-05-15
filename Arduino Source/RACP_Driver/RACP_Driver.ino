@@ -13,27 +13,18 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x41);
 
 //Servo zRot, shoulders, elbow, wrist, clawRot, claw;
 
+int numOfJoints = 0;
+
 int oldClawPos = 90;
 int clawHoldPos = 90;
 
 SoftwareSerial mySerial(5, 3); //RX, TX
 
-char *strings[23];
-
-char chars[23];
+char initChars[1];
 
 //int loopno = 0;
 
 byte index = 0;
-
-const int currentPin = A0;
-int sensitivity = 100;
-int adcValue = 0;
-int offsetVoltage = 9.76;
-double adcVoltage = 0;
-double currentValue = 0;
-
-double aveValue = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -45,41 +36,68 @@ void setup() {
 
   delay(10);
 
-  pwm.setPWM(0, 0, (uint16_t) map(90, 0, 180, SERVOMIN, SERVOMAX));
-  pwm.setPWM(1, 0, (uint16_t) map(90, 0, 180, SERVOMIN_HT, SERVOMAX_HT));
-  pwm.setPWM(2, 0, (uint16_t) map(90, 0, 180, SERVOMIN_HT, SERVOMAX_HT));
-  pwm.setPWM(3, 0, (uint16_t) map(90, 0, 180, SERVOMIN, SERVOMAX));
-  pwm.setPWM(4, 0, (uint16_t) map(90, 0, 180, SERVOMIN, SERVOMAX));
-  pwm.setPWM(5, 0, (uint16_t) map(90, 0, 180, SERVOMIN, SERVOMAX));
-
   delay(10);
 
  mySerial.begin(9600);
     mySerial.println("Started");
     //unsigned long timer = 0;
-  /*zRot.attach(2);
-    shoulders.attach(4);
-    elbow.attach(6);
-    wrist.attach(7);
-    clawRot.attach(8);
-    claw.attach(9);*/
 
-  chars[23] = NULL;
+  initChars[1] = NULL;
 
   pinMode(13, OUTPUT);
 
+  while(!Serial.available()) {
+    
+  }
+
+  if (Serial.available() > 0) {
+
+    //loopno++;
+
+    Serial.readBytes(initChars, 1);
+
+
+    /*for(int i = 0; i< sizeof(chars); i++) {
+
+      mySerial.print("Character ");
+      mySerial.print(i);
+      mySerial.print(": ");
+      mySerial.println(chars[i]);
+
+      }*/
+
+    String str(initChars);
+
+    numOfJoints = initChars;
+
+  }
+
+  for(int i=0; i<numOfJoints; i++) {
+
+      //initialize all of the servos depending on the number of joints in the arm
+      pwm.setPWM(i, 0, (uint16_t) map(90, 0, 180, SERVOMIN, SERVOMAX));
+    
+  }
+
 }
+
+//calculate num of bytes to receive.
+const int recvLen = ((numOfJoints*3) + numOfJoints - 1);
+
+char *strings[63];
+
+char chars[63];
 
 void loop() {
   // put your main code here, to run repeatedly:
 
   //unsigned long timer = millis();
 
-  if (Serial.available() > 22) {
+  if (Serial.available() > (recvLen-1)) {
 
     //loopno++;
 
-    Serial.readBytes(chars, 23);
+    Serial.readBytes(chars, recvLen);
 
 
     /*for(int i = 0; i< sizeof(chars); i++) {
@@ -118,11 +136,12 @@ void loop() {
 
     //**Addresses** zRot: 0, Shoulders: 1, Elbow: 2, Wrist: 3, clawRot: 4, claw: 5
 
-    pwm.setPWM(0, 0, (uint16_t) map(atoi(strings[0]), 0, 180, SERVOMIN, SERVOMAX));
-    pwm.setPWM(1, 0, (uint16_t) map(atoi(strings[1]), 0, 180, SERVOMIN_HT, SERVOMAX_HT));
-    pwm.setPWM(2, 0, (uint16_t) map(atoi(strings[2]), 0, 180, SERVOMIN_HT, SERVOMAX_HT));
-    pwm.setPWM(3, 0, (uint16_t) map(atoi(strings[3]), 0, 180, SERVOMIN, SERVOMAX));
-    pwm.setPWM(4, 0, (uint16_t) map(atoi(strings[4]), 0, 180, SERVOMIN, SERVOMAX));
+    for(int i = 0; i<numOfJoints-1; i++) {
+
+      
+    pwm.setPWM(i, 0, (uint16_t) map(atoi(strings[0]), 0, 180, SERVOMIN, SERVOMAX));
+      
+    }
             digitalWrite(13, LOW);
             //pwm.setPWM(5, 0, (uint16_t) map(atoi(strings[5]), 0, 180, SERVOMIN_HT, SERVOMAX));
 mySerial.print("Current: "); mySerial.print(getCurrent()); mySerial.println("mA");
@@ -130,7 +149,7 @@ mySerial.print("Current: "); mySerial.print(getCurrent()); mySerial.println("mA"
     //mySerial.print("After writing, this loop took "); mySerial.print(millis()-timer); mySerial.println("ms");
 
     //Pointer for easier reference
-    int clawPos = atoi(strings[5]);
+    int clawPos = atoi(strings[numOfJoints-1]);
 
     switch (clawPos) {
 
@@ -142,14 +161,14 @@ mySerial.print("Current: "); mySerial.print(getCurrent()); mySerial.println("mA"
           for (int i = 0; (i < 90); (i += 5)) {
 
             //Set servo position
-            pwm.setPWM(5, 0, (uint16_t) map(i, 0, 180, SERVOMIN_HT, SERVOMAX));
+            pwm.setPWM((numOfJoints-1), 0, (uint16_t) map(i, 0, 180, SERVOMIN_HT, SERVOMAX));
 
             //position to keep if the claw is holding something
             clawHoldPos = (i-10);
 
             if(getCurrent() > 0.6) {
 
-              pwm.setPWM(5, 0, (uint16_t) map((i-10), 0, 180, SERVOMIN_HT, SERVOMAX));
+              pwm.setPWM((numOfJoints-1), 0, (uint16_t) map((i-10), 0, 180, SERVOMIN_HT, SERVOMAX));
               digitalWrite(13, HIGH);
               break;
             }
@@ -160,7 +179,7 @@ mySerial.print("Current: "); mySerial.print(getCurrent()); mySerial.println("mA"
         } else {
 
           //Set to the previous holding position
-          pwm.setPWM(5, 0, (uint16_t) map(clawHoldPos, 0, 180, SERVOMIN_HT, SERVOMAX));
+          pwm.setPWM((numOfJoints-1), 0, (uint16_t) map(clawHoldPos, 0, 180, SERVOMIN_HT, SERVOMAX));
 
         }
 
@@ -168,7 +187,7 @@ mySerial.print("Current: "); mySerial.print(getCurrent()); mySerial.println("mA"
 
         case 0:
         
-        pwm.setPWM(5, 0, (uint16_t) map(clawPos, 0, 180, SERVOMIN_HT, SERVOMAX));
+        pwm.setPWM((numOfJoints-1), 0, (uint16_t) map(clawPos, 0, 180, SERVOMIN_HT, SERVOMAX));
 
         break;
 
@@ -181,12 +200,6 @@ mySerial.print("Current: "); mySerial.print(getCurrent()); mySerial.println("mA"
     //update oldClawPos
     oldClawPos = clawPos;
 
-    //shoulders.write(atoi(strings[1]));
-    //elbow.write(atoi(strings[2]));
-    //wrist.write(atoi(strings[3]));
-    //clawRot.write(atoi(strings[4]));
-    //claw.write(atoi(strings[5]));*/
-
     //mySerial.print("After writing claw position, this loop took "); mySerial.print(millis()-timer); mySerial.println("ms");
 
   }
@@ -197,7 +210,7 @@ mySerial.print("Current: "); mySerial.print(getCurrent()); mySerial.println("mA"
 
 void flush() {
 
-  for (int i = 0; i < 23; i++) {
+  for (int i = 0; i < recvLen; i++) {
 
     chars[i] = NULL;
     strings[i] = NULL;
@@ -206,18 +219,11 @@ void flush() {
 
 }
 
+//deprecated. remove from functions
 double getCurrent() {
 
-  aveValue = 0;
 
-  for (int i = 0; i < 5; i++) {
-    adcValue = analogRead(currentPin);
-    adcVoltage = (adcValue / 1024.0) * 5000;
-    currentValue = ((adcVoltage - offsetVoltage) / sensitivity);
-    aveValue += currentValue;
-  }
-
-  return (aveValue / 5);
+  return 0;
 
 }
 
