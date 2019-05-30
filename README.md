@@ -1,3 +1,3 @@
 # RACP
-![alt text](https://raw.githubusercontent.com/gabrielruoff/RACP/master/Logo/Logo.jpg)
+![alt text](https://raw.githubusercontent.com/gabrielruoff/RACP/tree/master/Logo/Logo.jpg)
 Robotic Arm Control Protocol
