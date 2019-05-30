@@ -1,3 +1,4 @@
 # RACP
-![alt text](https://raw.githubusercontent.com/gabrielruoff/RACP/tree/master/Logo/Logo.jpg)
-Robotic Arm Control Protocol
+<p align="center">
+  <img src="Logo/Logo.jpg" width="350" height="100" title="hover text">
+</p>
